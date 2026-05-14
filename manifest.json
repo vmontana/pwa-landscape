@@ -1,0 +1,23 @@
+{
+  "name": "PWA Landscape Test",
+  "short_name": "LandscapeTest",
+  "description": "PWA de prueba para test de orientación landscape via manifest (sin screen.orientation.lock)",
+  "start_url": "/pwa-landscape/",
+  "scope": "/pwa-landscape/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#1a1a2e",
+  "theme_color": "#e94560",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
