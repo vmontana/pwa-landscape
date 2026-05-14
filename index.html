@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PWA Landscape Test</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#e94560" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #e94560;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .card {
+      background: #16213e;
+      border-radius: 16px;
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      color: #e94560;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #0f3460;
+    }
+
+    .row:last-child { border-bottom: none; }
+
+    .label { color: #aaa; font-size: 0.85rem; }
+
+    .value {
+      font-weight: bold;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .value.ok { color: #4ade80; }
+    .value.warn { color: #facc15; }
+    .value.bad { color: #f87171; }
+
+    #orientation-badge {
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      border-radius: 12px;
+      background: #0f3460;
+      margin-top: 10px;
+    }
+
+    footer {
+      font-size: 0.75rem;
+      color: #555;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧭 PWA Landscape Test</h1>
+  <p class="subtitle">Manifest: <code>"orientation": "landscape"</code> — Sin <code>screen.orientation.lock()</code></p>
+
+  <div class="card">
+    <h2>📋 Info del Manifest</h2>
+    <div class="row">
+      <span class="label">display</span>
+      <span class="value ok">standalone</span>
+    </div>
+    <div class="row">
+      <span class="label">orientation</span>
+      <span class="value ok">landscape</span>
+    </div>
+    <div class="row">
+      <span class="label">screen.orientation.lock()</span>
+      <span class="value bad">NO implementado</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📱 Estado actual del dispositivo</h2>
+    <div class="row">
+      <span class="label">Orientación detectada</span>
+      <span class="value" id="orientation-type">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Ángulo</span>
+      <span class="value" id="orientation-angle">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Modo de display</span>
+      <span class="value" id="display-mode">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Pantalla (px)</span>
+      <span class="value" id="screen-size">—</span>
+    </div>
+    <div id="orientation-badge">—</div>
+  </div>
+
+  <footer>vmontana.github.io/pwa-landscape · Solo manifest, sin lock de código</footer>
+
+  <script>
+    function updateOrientation() {
+      const type = screen.orientation ? screen.orientation.type : 'no soportado';
+      const angle = screen.orientation ? screen.orientation.angle : '—';
+      const w = window.screen.width;
+      const h = window.screen.height;
+
+      document.getElementById('orientation-type').textContent = type;
+      document.getElementById('orientation-angle').textContent = angle + '°';
+      document.getElementById('screen-size').textContent = w + ' × ' + h;
+
+      const badge = document.getElementById('orientation-badge');
+      if (type.includes('landscape')) {
+        badge.textContent = '✅ LANDSCAPE';
+        badge.style.color = '#4ade80';
+      } else if (type.includes('portrait')) {
+        badge.textContent = '⚠️ PORTRAIT';
+        badge.style.color = '#facc15';
+      } else {
+        badge.textContent = '❓ ' + type;
+        badge.style.color = '#aaa';
+      }
+    }
+
+    function updateDisplayMode() {
+      const modes = ['fullscreen', 'standalone', 'minimal-ui', 'browser'];
+      let detected = 'browser';
+      for (const mode of modes) {
+        if (window.matchMedia('(display-mode: ' + mode + ')').matches) {
+          detected = mode;
+          break;
+        }
+      }
+      const el = document.getElementById('display-mode');
+      el.textContent = detected;
+      el.className = 'value ' + (detected === 'standalone' ? 'ok' : 'warn');
+    }
+
+    updateOrientation();
+    updateDisplayMode();
+
+    if (screen.orientation) {
+      screen.orientation.addEventListener('change', updateOrientation);
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW registrado'))
+        .catch(e => console.warn('SW error:', e));
+    }
+  </script>
+</body>
+</html>
