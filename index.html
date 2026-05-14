@@ -3,7 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PWA Landscape Test</title>
+  <title>Landscape Test</title>
+  <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+  <h1>PWA Landscape Test</h1>
+  <p>Manifest: <strong>"orientation": "landscape"</strong></p>
+  <p>Sin <code>screen.orientation.lock()</code></p>
+  <p>Orientación actual: <strong id="ori">—</strong></p>
+  <p>Display mode: <strong id="mode">—</strong></p>
+
+  <script>
+    document.getElementById('ori').textContent = screen.orientation?.type ?? 'no soportado';
+    screen.orientation?.addEventListener('change', () => {
+      document.getElementById('ori').textContent = screen.orientation.type;
+    });
+
+    const modes = ['standalone', 'fullscreen', 'minimal-ui', 'browser'];
+    document.getElementById('mode').textContent =
+      modes.find(m => matchMedia('(display-mode:' + m + ')').matches) ?? 'browser';
+
+    navigator.serviceWorker?.register('sw.js');
+  </script>
+</body>
+</html>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#e94560" />
   <meta name="mobile-web-app-capable" content="yes" />
