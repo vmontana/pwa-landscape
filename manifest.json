@@ -4,7 +4,7 @@
   "description": "PWA de prueba para test de orientación landscape via manifest (sin screen.orientation.lock)",
   "start_url": "/pwa-landscape/",
   "scope": "/pwa-landscape/",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "landscape",
   "background_color": "#1a1a2e",
   "theme_color": "#e94560",
